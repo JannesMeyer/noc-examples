@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<title>Demo</title>
 	<style>
-	#stageCanvas {
+	#canvas {
 		margin: 0 auto;
 		border: 1px solid rgba(0, 0, 0, 0.1);
 	}
@@ -12,38 +12,15 @@
 </head>
 <body>
 
-<canvas id="stageCanvas" width="800" height="600"></canvas>
+<!-- http://webstudio2.tumblr.com/syllabus -->
+
+<!-- EaselJS stage -->
+<canvas id="canvas" width="400" height="300"></canvas>
 
 <!-- JavaScript -->
 <script src="js/vendor/easeljs-0.5.0.min.js"></script>
-<script>
-window.addEventListener("DOMContentLoaded", init);
-
-var stage;
-var circle;
-
-function init() {
-	stage = new createjs.Stage("stageCanvas");
-	circle = new createjs.Shape();
-	circle.graphics.beginFill("red").drawCircle(50, 50, 20);
-	stage.addChild(circle);
-
-	// Start ticker
-	createjs.Ticker.addListener(window);
-}
-
-function tick() {
-	circle.alpha = 0.2;
-	if (circle.hitTest(stage.mouseX, stage.mouseY)) {
-		circle.alpha = 1;
-	}
-
-	// global to local
-	// var pt = circle.globalToLocal(stage.mouseX, stage.mouseY);
-
-	stage.update();
-}
-</script>
+<script src="js/button.js"></script>
+<script src="js/main.js"></script>
 
 </body>
 </html>
