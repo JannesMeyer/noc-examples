@@ -1,36 +1,58 @@
-window.addEventListener("DOMContentLoaded", init);
+// PVector constructor
+PVector = function(x, y) {
+	this.x = x;
+	this.y = y;
+};
+// Add another vector
+PVector.prototype.add = function(v) {
+	// TODO: check if the v is a PVector
+	if (typeof v === 'undefined') {
+		console.error('Missing paramter for PVector.add');
+	}
+
+	// Addition
+	this.x += v.x;
+	this.y += v.y;
+}
 
 var stage;
-var canvasWidth;
-var canvasHeight;
+var ball = {
+	location: new PVector(100, 100),
+	velocity: new PVector(4, 7),
+	radius: 20
+};
+var ballShape;
+
+window.addEventListener('DOMContentLoaded', init, false);
 
 function init() {
-	stage = new createjs.Stage("canvas");
+	stage = new createjs.Stage('canvas');
 
-	var btn1 = stage.addChild(new Button("Hello!", "#f00"));
-	btn1.y = 20;
-
-	var btn2 = stage.addChild(new Button("Goodbye.", "#0f0"));
-	btn2.y = btn1.y + 50;
-
-	var btn3 = stage.addChild(new Button("Hello again!", "#0ff"));
-	btn3.y = btn2.y + 50;
-
-	btn1.x = btn2.x = btn3.x = 20;
-
+	// Create ball
+	ballShape = new createjs.Shape();
+	ballShape.graphics.beginFill('#444').drawCircle(0, 0, ball.radius);
+	stage.addChild(ballShape);
+	
 	// Start ticker
 	createjs.Ticker.addListener(window);
 	createjs.Ticker.setFPS(60);
 }
 
 function tick() {
-	/*
-	circle.alpha = 0.2;
-	if (circle.hitTest(stage.mouseX, stage.mouseY)) {
-		circle.alpha = 1;
+	// Move the ball
+	ball.location.add(ball.velocity);
+
+	// Check for bouncing
+	if (((ball.location.x + ball.radius) > stage.canvas.width) || (ball.location.x < ball.radius)) {
+		ball.velocity.x *= -1;
 	}
-	console.log(circle.globalToLocal(stage.mouseX, stage.mouseY));
-	*/
+	if (((ball.location.y + ball.radius) > stage.canvas.height) || (ball.location.y < ball.radius)) {
+		ball.velocity.y *= -1;
+	}
+
+	// Update position
+	ballShape.x = ball.location.x;
+	ballShape.y = ball.location.y;
 
 	stage.update();
 }
