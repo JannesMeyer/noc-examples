@@ -13,7 +13,7 @@ PVector.prototype.add = function(v) {
 	// Addition
 	this.x += v.x;
 	this.y += v.y;
-}
+};
 
 var stage;
 var ball = {
@@ -26,11 +26,20 @@ var ballShape;
 window.addEventListener('DOMContentLoaded', init, false);
 
 function init() {
-	stage = new createjs.Stage('canvas');
+	var canvas = document.getElementById("canvas");
+	stage = new createjs.Stage(canvas);
+
+	// Automatically resize the canvas to fullscreen, fuck performance
+	function resizeToFullscreen() {
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+	}
+	resizeToFullscreen();
+	window.addEventListener('resize', resizeToFullscreen, false);
 
 	// Create ball
 	ballShape = new createjs.Shape();
-	ballShape.graphics.beginFill('#444').drawCircle(0, 0, ball.radius);
+	ballShape.graphics.beginFill('#f00').drawCircle(0, 0, ball.radius);
 	stage.addChild(ballShape);
 	
 	// Start ticker
