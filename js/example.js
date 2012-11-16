@@ -34,8 +34,8 @@ function randomFloat(lower, upper) {
 
 // PVector object constructor
 PVector = function(x, y) {
-	this.x = x;
-	this.y = y;
+	this.x = x || 0;
+	this.y = y || 0;
 };
 // Addition
 PVector.prototype.add = function(v) {
@@ -81,6 +81,10 @@ PVector.prototype.limit = function(max) {
 		this.mult(max);
 	}
 };
+// I don't need no static methods. Just clone it!
+PVector.prototype.clone = function() {
+	return new PVector(this.x, this.y);
+};
 
 
 
@@ -89,7 +93,7 @@ function Mover() {
 	var center = new PVector(stage.canvas.width/2, stage.canvas.height/2);
 	this.location = center;
 	this.velocity = new PVector(0, 0);
-	this.acceleration = new PVector(-0.001, 0.01);
+	this.acceleration = new PVector(0, 0);
 	this.topspeed = 10;
 
 	// Create ball
@@ -101,6 +105,13 @@ function Mover() {
 	stage.addChild(this.shape);
 }
 Mover.prototype.update = function() {
+	// Randomly select an acceleration
+	this.acceleration.x = randomFloat(-1, 1);
+	this.acceleration.y = randomFloat(-1, 1);
+	this.acceleration.normalize();
+	//this.acceleration.mult(0.5);
+	this.acceleration.mult(randomFloat(2));
+
 	// Velocity changes by acceleration
 	this.velocity.add(this.acceleration);
 	// And is limited by topseed
