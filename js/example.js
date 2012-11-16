@@ -34,8 +34,8 @@ function randomFloat(lower, upper) {
 
 // PVector object constructor
 PVector = function(x, y) {
-	this.x = x || 0;
-	this.y = y || 0;
+	this.x = x;
+	this.y = y;
 };
 // Addition
 PVector.prototype.add = function(v) {
@@ -99,7 +99,7 @@ function Mover() {
 	this.radius = 16;
 	this.shape = new createjs.Shape();
 	this.shape.graphics
-		.beginFill('#000')
+		.beginFill(createjs.Graphics.getRGB(0, 0, 0, 0.25))
 		.drawCircle(0, 0, this.radius);
 	stage.addChild(this.shape);
 }
@@ -164,7 +164,7 @@ function init() {
 		movers.push(new Mover());
 	}
 	// Create a Point that will be used to store the mouse position
-	mouse = new PVector();
+	mouse = new PVector(0, 0);
 	
 	// Start ticker
 	createjs.Ticker.addListener(window);
