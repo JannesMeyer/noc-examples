@@ -105,12 +105,16 @@ function Mover() {
 	stage.addChild(this.shape);
 }
 Mover.prototype.update = function() {
-	// Randomly select an acceleration
-	this.acceleration.x = randomFloat(-1, 1);
-	this.acceleration.y = randomFloat(-1, 1);
-	this.acceleration.normalize();
-	//this.acceleration.mult(0.5);
-	this.acceleration.mult(randomFloat(2));
+	// Accelerate towards the mouse
+	mouse.x = stage.mouseX;
+	mouse.y = stage.mouseY;
+
+	if (!mouse.isNull()) {
+		mouse.sub(this.location);
+		mouse.normalize();
+		mouse.mult(0.5);
+		this.acceleration = mouse;
+	}
 
 	// Velocity changes by acceleration
 	this.velocity.add(this.acceleration);
@@ -140,6 +144,7 @@ Mover.prototype.checkEdges = function() {
 
 var stage;
 var mover;
+var mouse;
 
 window.addEventListener('DOMContentLoaded', init, false);
 
@@ -157,6 +162,8 @@ function init() {
 
 	// Create Mover
 	mover = new Mover();
+	// Create a Point that will be used to store the mouse position
+	mouse = new PVector();
 	
 	// Start ticker
 	createjs.Ticker.addListener(window);
