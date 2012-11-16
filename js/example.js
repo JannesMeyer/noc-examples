@@ -74,16 +74,26 @@ PVector.prototype.normalize = function() {
 PVector.prototype.isNull = function() {
 	return this.x === 0 && this.y === 0;
 };
+// Limit the magnitude of the vector
+PVector.prototype.limit = function(max) {
+	if (this.mag() > max) {
+		this.normalize();
+		this.mult(max);
+	}
+};
 
 
 
 // Mover object constructor
 function Mover() {
-	this.location = new PVector(random(stage.canvas.width), random(stage.canvas.height));
-	this.velocity = new PVector(randomFloat(-2, 2), randomFloat(-2, 2));
-	this.radius = 16;
+	var center = new PVector(stage.canvas.width/2, stage.canvas.height/2);
+	this.location = center;
+	this.velocity = new PVector(0, 0);
+	this.acceleration = new PVector(-0.001, 0.01);
+	this.topspeed = 10;
 
 	// Create ball
+	this.radius = 16;
 	this.shape = new createjs.Shape();
 	this.shape.graphics
 		.beginFill('#000')
@@ -91,7 +101,10 @@ function Mover() {
 	stage.addChild(this.shape);
 }
 Mover.prototype.update = function() {
-	// The Mover moves
+	// Velocity changes by acceleration
+	this.velocity.add(this.acceleration);
+	// And is limited by topseed
+	this.velocity.limit(this.topspeed);
 	this.location.add(this.velocity);
 };
 Mover.prototype.display = function() {
@@ -115,7 +128,7 @@ Mover.prototype.checkEdges = function() {
 
 
 var stage;
-var movers = [];
+var mover;
 
 window.addEventListener('DOMContentLoaded', init, false);
 
@@ -132,15 +145,7 @@ function init() {
 	window.addEventListener('resize', resizeToFullscreen, false);
 
 	// Create Mover
-	movers.push(new Mover());
-	movers.push(new Mover());
-	movers.push(new Mover());
-	movers.push(new Mover());
-	movers.push(new Mover());
-	movers.push(new Mover());
-	movers.push(new Mover());
-	movers.push(new Mover());
-	movers.push(new Mover());
+	mover = new Mover();
 	
 	// Start ticker
 	createjs.Ticker.addListener(window);
@@ -148,11 +153,9 @@ function init() {
 }
 
 function tick() {
-	for (var i = 0, len = movers.length; i < len; ++i) {
-		movers[i].update();
-		movers[i].checkEdges();
-		movers[i].display();
-	}
+	mover.update();
+	mover.checkEdges();
+	mover.display();
 
 	stage.update();
 }
