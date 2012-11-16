@@ -90,11 +90,10 @@ PVector.prototype.clone = function() {
 
 // Mover object constructor
 function Mover() {
-	var center = new PVector(stage.canvas.width/2, stage.canvas.height/2);
-	this.location = center;
+	this.location = new PVector(random(stage.canvas.width), random(stage.canvas.height));
 	this.velocity = new PVector(0, 0);
 	this.acceleration = new PVector(0, 0);
-	this.topspeed = 10;
+	this.topspeed = 5;
 
 	// Create ball
 	this.radius = 16;
@@ -143,7 +142,7 @@ Mover.prototype.checkEdges = function() {
 
 
 var stage;
-var mover;
+var movers = [];
 var mouse;
 
 window.addEventListener('DOMContentLoaded', init, false);
@@ -161,7 +160,9 @@ function init() {
 	window.addEventListener('resize', resizeToFullscreen, false);
 
 	// Create Mover
-	mover = new Mover();
+	for (var i = 0; i < 20; ++i) {
+		movers.push(new Mover());
+	}
 	// Create a Point that will be used to store the mouse position
 	mouse = new PVector();
 	
@@ -171,9 +172,11 @@ function init() {
 }
 
 function tick() {
-	mover.update();
-	mover.checkEdges();
-	mover.display();
+	for (var i = 0, len = movers.length; i < len; ++i) {
+		movers[i].update();
+		movers[i].checkEdges();
+		movers[i].display();
+	}
 
 	stage.update();
 }
