@@ -41,21 +41,26 @@ PVector = function(x, y) {
 PVector.prototype.add = function(v) {
 	this.x += v.x;
 	this.y += v.y;
+	// Allow for chaining
+	return this;
 };
 // Subtraction
 PVector.prototype.sub = function(v) {
 	this.x -= v.x;
 	this.y -= v.y;
+	return this;
 };
 // Multiplication
 PVector.prototype.mult = function(factor) {
 	this.x *= factor;
 	this.y *= factor;
+	return this;
 };
 // Division
 PVector.prototype.div = function(dividend) {
 	this.x /= dividend;
 	this.y /= dividend;
+	return this;
 };
 // Calculate the magnitude
 PVector.prototype.mag = function() {
@@ -69,6 +74,7 @@ PVector.prototype.normalize = function() {
 		this.x /= magnitude;
 		this.y /= magnitude;
 	}
+	return this;
 };
 // Check for null vector
 PVector.prototype.isNull = function() {
@@ -80,8 +86,9 @@ PVector.prototype.limit = function(max) {
 		this.normalize();
 		this.mult(max);
 	}
+	return this;
 };
-// I don't need no static methods. Just clone it!
+// I don't need no static methods.
 PVector.prototype.clone = function() {
 	return new PVector(this.x, this.y);
 };
