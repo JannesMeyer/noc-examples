@@ -172,11 +172,12 @@ function init() {
 }
 
 function tick() {
-	var wind = new PVector(0.01, 0);
-	var gravity = new PVector(0, 0.1);
-
 	for (var i = 0, len = movers.length; i < len; ++i) {
 		var mover = movers[i];
+
+		var wind = new PVector(0.01, 0);
+		var gravity = new PVector(0, 0.1 * mover.mass);
+
 		mover.applyForce(wind);
 		mover.applyForce(gravity);
 
