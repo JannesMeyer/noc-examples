@@ -97,36 +97,22 @@ PVector.prototype.clone = function() {
 
 // Mover object constructor
 function Mover() {
-	this.location = new PVector(random(stage.canvas.width), random(stage.canvas.height));
+	this.location = new PVector(30, 30);
 	this.velocity = new PVector(0, 0);
 	this.acceleration = new PVector(0, 0);
-	this.mass = 10;
+	this.mass = 1;
 
 	// Create ball
-	this.radius = 16;
 	this.shape = new createjs.Shape();
 	this.shape.graphics
-		.beginFill(createjs.Graphics.getRGB(0, 0, 0, 0.25))
-		.drawCircle(0, 0, this.radius);
+		.beginFill(createjs.Graphics.getRGB(0, 0, 0, 1))
+		.drawCircle(0, 0, this.mass * 16);
 	stage.addChild(this.shape);
 }
 Mover.prototype.applyForce = function(force) {
-	force.div(this.mass);
-	console.log(force);
-	this.acceleration.add(force);
+	this.acceleration.add(force.clone().div(this.mass));
 };
 Mover.prototype.update = function() {
-	// Accelerate towards the mouse
-	mouse.x = stage.mouseX;
-	mouse.y = stage.mouseY;
-
-	if (!mouse.isNull()) {
-		mouse.sub(this.location);
-		mouse.normalize();
-		mouse.mult(0.5);
-		this.acceleration = mouse;
-	}
-
 	// Velocity changes by acceleration
 	this.velocity.add(this.acceleration);
 	this.location.add(this.velocity);
@@ -138,24 +124,28 @@ Mover.prototype.display = function() {
 	this.shape.y = this.location.y;
 };
 Mover.prototype.checkEdges = function() {
-	if (this.location.x > stage.canvas.width) {
-		this.location.x = 0;
-	} else if (this.location.x < 0) {
-		this.location.x = stage.canvas.width;
+	var canvas = stage.canvas;
+	var loc = this.location;
+	var vel = this.velocity;
+
+	if (loc.x > canvas.width) {
+		vel.x *= -1;
+		loc.x = canvas.width;
+	} else if (loc.x < 0) {
+		vel.x *= -1;
+		loc.x = 0;
 	}
 
-	if (this.location.y > stage.canvas.height) {
-		this.location.y = 0;
-	} else if (this.location.y < 0) {
-		this.location.y = stage.canvas.height;
+	if (loc.y > canvas.height) {
+		vel.y *= -1;
+		loc.y = canvas.height;
 	}
 };
 
 
 
 var stage;
-var movers = [];
-var mouse;
+var mover;
 
 window.addEventListener('DOMContentLoaded', init, false);
 
@@ -171,24 +161,23 @@ function init() {
 	resizeToFullWindow();
 	window.addEventListener('resize', resizeToFullWindow, false);
 
-	// Create Mover
-	for (var i = 0; i < 20; ++i) {
-		movers.push(new Mover());
-	}
-	// Create a Point that will be used to store the mouse position
-	mouse = new PVector(0, 0);
-	
+	// Create a mover
+	mover = new Mover(randomFloat(0.1, 5), 0, 0);
+
 	// Start ticker
 	createjs.Ticker.addListener(window);
 	createjs.Ticker.setFPS(60);
 }
 
 function tick() {
-	for (var i = 0, len = movers.length; i < len; ++i) {
-		movers[i].update();
-		movers[i].checkEdges();
-		movers[i].display();
-	}
+	var wind = new PVector(0.01, 0);
+	var gravity = new PVector(0, 0.1);
+	mover.applyForce(wind);
+	mover.applyForce(gravity);
+
+	mover.update();
+	mover.checkEdges();
+	mover.display();
 
 	stage.update();
 }
