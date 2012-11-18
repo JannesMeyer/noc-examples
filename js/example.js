@@ -100,7 +100,7 @@ function Mover() {
 	this.location = new PVector(random(stage.canvas.width), random(stage.canvas.height));
 	this.velocity = new PVector(0, 0);
 	this.acceleration = new PVector(0, 0);
-	this.topspeed = 5;
+	this.mass = 10;
 
 	// Create ball
 	this.radius = 16;
@@ -110,6 +110,11 @@ function Mover() {
 		.drawCircle(0, 0, this.radius);
 	stage.addChild(this.shape);
 }
+Mover.prototype.applyForce = function(force) {
+	force.div(this.mass);
+	console.log(force);
+	this.acceleration.add(force);
+};
 Mover.prototype.update = function() {
 	// Accelerate towards the mouse
 	mouse.x = stage.mouseX;
@@ -124,9 +129,9 @@ Mover.prototype.update = function() {
 
 	// Velocity changes by acceleration
 	this.velocity.add(this.acceleration);
-	// And is limited by topseed
-	this.velocity.limit(this.topspeed);
 	this.location.add(this.velocity);
+	// Reset acceleration for the next frame
+	this.acceleration.mult(0);
 };
 Mover.prototype.display = function() {
 	this.shape.x = this.location.x;
@@ -159,12 +164,12 @@ function init() {
 	stage = new createjs.Stage(canvas);
 
 	// Automatically resize the canvas to fullscreen, fuck performance
-	function resizeToFullscreen() {
+	function resizeToFullWindow() {
 		canvas.width = window.innerWidth;
 		canvas.height = window.innerHeight;
 	}
-	resizeToFullscreen();
-	window.addEventListener('resize', resizeToFullscreen, false);
+	resizeToFullWindow();
+	window.addEventListener('resize', resizeToFullWindow, false);
 
 	// Create Mover
 	for (var i = 0; i < 20; ++i) {
