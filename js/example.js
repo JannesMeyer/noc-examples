@@ -96,16 +96,16 @@ PVector.prototype.clone = function() {
 
 
 // Mover object constructor
-function Mover() {
-	this.location = new PVector(30, 30);
+function Mover(m, x, y) {
+	this.mass = m;
+	this.location = new PVector(x, y);
 	this.velocity = new PVector(0, 0);
 	this.acceleration = new PVector(0, 0);
-	this.mass = 1;
 
 	// Create ball
 	this.shape = new createjs.Shape();
 	this.shape.graphics
-		.beginFill(createjs.Graphics.getRGB(0, 0, 0, 1))
+		.beginFill(createjs.Graphics.getRGB(0, 0, 0, 0.3))
 		.drawCircle(0, 0, this.mass * 16);
 	stage.addChild(this.shape);
 }
@@ -145,7 +145,7 @@ Mover.prototype.checkEdges = function() {
 
 
 var stage;
-var mover;
+var movers = [];
 
 window.addEventListener('DOMContentLoaded', init, false);
 
@@ -162,7 +162,9 @@ function init() {
 	window.addEventListener('resize', resizeToFullWindow, false);
 
 	// Create a mover
-	mover = new Mover(randomFloat(0.1, 5), 0, 0);
+	for (var i = 0; i < 20; ++i) {
+		movers.push(new Mover(randomFloat(0.1, 5), 0, 0));
+	}
 
 	// Start ticker
 	createjs.Ticker.addListener(window);
@@ -172,12 +174,16 @@ function init() {
 function tick() {
 	var wind = new PVector(0.01, 0);
 	var gravity = new PVector(0, 0.1);
-	mover.applyForce(wind);
-	mover.applyForce(gravity);
 
-	mover.update();
-	mover.checkEdges();
-	mover.display();
+	for (var i = 0, len = movers.length; i < len; ++i) {
+		var mover = movers[i];
+		mover.applyForce(wind);
+		mover.applyForce(gravity);
+
+		mover.update();
+		mover.checkEdges();
+		mover.display();
+	}
 
 	stage.update();
 }
