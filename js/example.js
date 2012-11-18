@@ -125,20 +125,20 @@ Mover.prototype.display = function() {
 };
 Mover.prototype.checkEdges = function() {
 	var canvas = stage.canvas;
-	var loc = this.location;
+	var radius = this.mass * 16;
 	var vel = this.velocity;
 
-	if (loc.x > canvas.width) {
+	if (this.location.x > canvas.width) {
 		vel.x *= -1;
-		loc.x = canvas.width;
-	} else if (loc.x < 0) {
+		this.location.x = canvas.width;
+	} else if (this.location.x < 0) {
 		vel.x *= -1;
-		loc.x = 0;
+		this.location.x = 0;
 	}
 
-	if (loc.y > canvas.height) {
+	if (this.location.y + radius > canvas.height) {
 		vel.y *= -1;
-		loc.y = canvas.height;
+		this.location.y = canvas.height - radius;
 	}
 };
 
@@ -163,7 +163,8 @@ function init() {
 
 	// Create a mover
 	for (var i = 0; i < 20; ++i) {
-		movers.push(new Mover(randomFloat(0.1, 5), 0, 0));
+		// movers.push(new Mover(randomFloat(1, 4), 0, 0));
+		movers.push(new Mover(randomFloat(1, 4), random(canvas.width), 0));
 	}
 
 	// Start ticker
@@ -172,12 +173,20 @@ function init() {
 }
 
 function tick() {
+	// Friction coefficient
+	var c = 0.05;
+	// Wind force
+	var wind = new PVector(0.01, 0);
+
 	for (var i = 0, len = movers.length; i < len; ++i) {
 		var mover = movers[i];
 
-		var wind = new PVector(0.01, 0);
+		// Calculate friction force, which points in the opposite direction of velocity
+		var friction = mover.velocity.clone().mult(-1).normalize().mult(c);
+		// Calculate gravity force
 		var gravity = new PVector(0, 0.1 * mover.mass);
 
+		mover.applyForce(friction);
 		mover.applyForce(wind);
 		mover.applyForce(gravity);
 
