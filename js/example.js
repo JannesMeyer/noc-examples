@@ -182,7 +182,10 @@ function tick() {
 		var mover = movers[i];
 
 		// Calculate friction force, which points in the opposite direction of velocity
-		var friction = mover.velocity.clone().mult(-1).normalize().mult(c);
+		var friction = mover.velocity.clone()
+			.mult(-1)
+			.normalize()
+			.mult(c);
 		// Calculate gravity force
 		var gravity = new PVector(0, 0.1 * mover.mass);
 
