@@ -5,21 +5,23 @@ define(['createjs', 'PVector'],
 function(createjs, PVector) {
 
 	function Mover(m, x, y) {
-		this.mass = m;
-		this.location = new PVector(x, y);
-		this.velocity = new PVector(0, 0);
+		this.mass = 1;
+		this.location = new PVector(400, 50);
+		this.velocity = new PVector(1, 0);
 		this.acceleration = new PVector(0, 0);
 
 		// Create ball
 		this.shape = new createjs.Shape();
 		this.shape.graphics
-			.beginFill(createjs.Graphics.getRGB(0, 0, 0, 0.3))
-			.drawCircle(0, 0, this.mass * 16);
+			.beginFill('#999')
+			.drawCircle(0, 0, this.mass * 8);
 		stage.addChild(this.shape);
 	}
+
 	Mover.prototype.applyForce = function(force) {
 		this.acceleration.add(force.clone().div(this.mass));
 	};
+	
 	Mover.prototype.update = function() {
 		// Velocity changes by acceleration
 		this.velocity.add(this.acceleration);
@@ -27,10 +29,12 @@ function(createjs, PVector) {
 		// Reset acceleration for the next frame
 		this.acceleration.mult(0);
 	};
+	
 	Mover.prototype.display = function() {
 		this.shape.x = this.location.x;
 		this.shape.y = this.location.y;
 	};
+	
 	Mover.prototype.checkEdges = function() {
 		var canvas = stage.canvas;
 		var radius = this.mass * 16;
@@ -51,6 +55,7 @@ function(createjs, PVector) {
 			this.location.y = canvas.height - radius;
 		}
 	};
+	
 	Mover.prototype.isInside = function(liquid) {
 		var x = this.location.x;
 		var y = this.location.y;
@@ -58,6 +63,7 @@ function(createjs, PVector) {
 		return (x > liquid.x) && (x < liquid.x + liquid.width) &&
 		       (y > liquid.y) && (y < liquid.y + liquid.height);
 	};
+	
 	Mover.prototype.drag = function(liquid) {
 		var speed = this.velocity.mag();
 		// Normalization is done by dividing by speed. This saves a few function calls.
