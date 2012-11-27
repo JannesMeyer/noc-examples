@@ -34,6 +34,34 @@ define(function() {
 			} else {
 				return Math.random() * (upper - lower) + lower;
 			}
+		},
+
+		/**
+		 * Gaussian normal distribution
+		 */
+		Generator: function(seed) {
+			var haveNextNextGaussian = false;
+			var nextNextGaussian;
+
+			this.nextGaussian = function() {
+				if (haveNextNextGaussian) {
+					haveNextNextGaussian = false;
+					return nextNextGaussian;
+				}
+
+				var v1, v2, s;
+				do {
+					v1 = 2 * Math.random() - 1;
+					v2 = 2 * Math.random() - 1;
+					s = v1 * v1 + v2 * v2;
+				} while (s >= 1 || s === 0);
+
+				var multiplier = Math.sqrt(-2 * Math.log(s) / s);
+				nextNextGaussian = v2 * multiplier;
+				haveNextNextGaussian = true;
+
+				return v1 * multiplier;
+			};
 		}
 
 	};
