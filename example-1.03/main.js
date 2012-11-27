@@ -17,8 +17,8 @@ requirejs.config({
  */
 var stage;
 
-requirejs(['createjs', '_', 'random', 'vec2', 'Mover', 'Attractor'],
-function(createjs, _, random, Vec2, Mover, Attractor) {
+requirejs(['createjs', '_', 'vec2'],
+function(createjs, _, Vec2) {
 
 	stage = new createjs.Stage('canvas');
 
@@ -29,25 +29,32 @@ function(createjs, _, random, Vec2, Mover, Attractor) {
 	resizeToFullWindow();
 	addEventListener('resize', _.debounce(resizeToFullWindow, 200), false);
 
-	// Create a mover and an attractor
-	var a = new Attractor();
-	var m = new Mover();
+	// Create line
+	var line = new createjs.Shape();
+	stage.addChild(line);
 
 	// Start ticker
-	createjs.Ticker.setFPS(60);
 	createjs.Ticker.addListener(tick);
+	createjs.Ticker.setFPS(60);
 
 	function tick() {
+		var mouse = new Vec2(stage.mouseX, stage.mouseY);
+		var center = new Vec2(stage.canvas.width / 2, stage.canvas.height / 2);
 
-		var force = a.attract(m);
-		m.applyForce(force);
-		m.update();
+		// Prevent drawing a line to (0, 0) directly after loading the page
+		if (!mouse.isNull()) {
+			// Calculate direction
+			mouse.sub(center);
 
-		a.display();
-		m.display();
+			line.graphics
+				.clear()
+				.setStrokeStyle(2)
+				.beginStroke("#000")
+				.moveTo(center.x, center.y)
+				.lineTo(center.x + mouse.x, center.y + mouse.y);
+		}
 
 		stage.update();
-
 	}
 
 });
