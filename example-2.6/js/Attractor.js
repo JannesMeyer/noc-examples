@@ -1,8 +1,8 @@
 /**
  * Attractor module
  */
-define(['createjs', 'PVector'],
-function(createjs, PVector) {
+define(['createjs', 'vec2'],
+function(createjs, Vec2) {
 
 	function constrain(number, min, max) {
 		if (number < min) {
@@ -15,7 +15,7 @@ function(createjs, PVector) {
 	}
 
 	function Attractor() {
-		this.location = new PVector(400, 100);
+		this.location = new Vec2(400, 100);
 		this.mass = 20;
 		this.g = 0.4;
 

@@ -1,11 +1,11 @@
 /**
- * Random module
+ * Random
  *
  * @author Jannes Meyer
  */
 define(function() {
 	return {
-		
+
 		/**
 		 * Returns a random natural number between the lower and upper bound (including both bounds).
 		 * Can alternatively be called with just one parameter, in which case the lower
@@ -20,7 +20,7 @@ define(function() {
 				return Math.floor(Math.random() * (upper + 1 - lower)) + lower;
 			}
 		},
-		
+
 		/**
 		 * Returns a random real number between the lower and upper bound
 		 * (including the lower bound, but not the upper bound).
