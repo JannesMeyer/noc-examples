@@ -24,14 +24,7 @@ function(createjs, _, random) {
 
 	stage = new createjs.Stage('canvas');
 
-	function resizeToFullWindow() {
-		stage.canvas.width = window.innerWidth;
-		stage.canvas.height = window.innerHeight;
-	}
-	resizeToFullWindow();
-	addEventListener('resize', _.debounce(resizeToFullWindow, 200), false);
-
-	// Setup
+	// Create a generator for the gaussian normal distribution
 	var generator = new random.Generator();
 
 	// Start ticker
@@ -39,17 +32,15 @@ function(createjs, _, random) {
 	createjs.Ticker.addListener(tick);
 
 	function tick() {
-		// Place a circle
-		var num = generator.nextGaussian();
-		var sd = 100;
-		var mean = stage.canvas.width / 2;
-		var x = num * sd + mean;
-		var y = stage.canvas.height / 2;
+		// Get a gaussian random number w/ mean of 0 and standard deviation of 1.0
+		var rnd = generator.nextGaussian();
+		// Scale the gaussian random number by standard deviation and mean
+		var x = (rnd * 100) + (stage.canvas.width / 2);
 
 		var circle = new createjs.Shape();
 		circle.graphics
 			.beginFill(createjs.Graphics.getRGB(0, 0, 0, 0.1))
-			.drawCircle(x, y, 8);
+			.drawCircle(x, stage.canvas.height / 2, 8);
 		stage.addChild(circle);
 
 		stage.update();

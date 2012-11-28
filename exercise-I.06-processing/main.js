@@ -1,7 +1,3 @@
-window.addEventListener('load', function() {
-	new Processing('canvas', sketch);
-}, false);
-
 function sketch(p) {
 
 	p.setup = function() {
@@ -34,4 +30,7 @@ function sketch(p) {
 
 		p.updatePixels();
 	};
+
 }
+
+new Processing('canvas', sketch);
