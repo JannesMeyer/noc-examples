@@ -9,7 +9,7 @@ function sketch(p) {
 	};
 
 	// parameters
-	var increment = 0.02;
+	var increment = 0.01;
 
 	// draw function
 	p.draw = function() {
